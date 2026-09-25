@@ -1,0 +1,48 @@
+<section class="summary">
+  <div class="stat">
+    <span class="stat-label">Combined win probability</span>
+    <span class="stat-value">{{ result.combinedWinProbabilityPct.toFixed(1) }}%</span>
+  </div>
+  <div class="stat">
+    <span class="stat-label">Total odds</span>
+    <span class="stat-value">{{ result.totalOdds.toFixed(2) }}</span>
+  </div>
+  <div class="stat">
+    <span class="stat-label">Implied by odds</span>
+    <span class="stat-value">{{ result.impliedProbabilityPct.toFixed(1) }}%</span>
+  </div>
+  <div class="stat">
+    <span class="stat-label">Risk rating</span>
+    <span class="stat-value pill" [ngClass]="riskClass(result.overallRiskRating)">{{ result.overallRiskRating }}</span>
+  </div>
+</section>
+
+<section class="legs">
+  <h2>Leg-by-leg breakdown</h2>
+  <div class="leg-row leg-head">
+    <span>Fixture</span>
+    <span>Market</span>
+    <span>Odds</span>
+    <span>Model</span>
+    <span>Implied</span>
+    <span>Edge</span>
+  </div>
+  <div class="leg-row" *ngFor="let leg of result.selections">
+    <span class="fixture">{{ leg.homeTeam }} vs {{ leg.awayTeam }}</span>
+    <span>{{ marketLabel(leg.market) }}</span>
+    <span class="mono">{{ leg.odds ? leg.odds.toFixed(2) : '—' }}</span>
+    <span class="mono">{{ leg.modelProbabilityPct.toFixed(0) }}%</span>
+    <span class="mono">{{ leg.impliedProbabilityPct.toFixed(0) }}%</span>
+    <span class="mono" [ngClass]="edgeClass(leg.edgePct)">
+      {{ leg.edgePct > 0 ? '+' : '' }}{{ leg.edgePct.toFixed(1) }}%
+    </span>
+    <span class="note">{{ leg.note }}</span>
+  </div>
+</section>
+
+<section class="suggestions" *ngIf="result.refinedSuggestions?.length">
+  <h2>Refined suggestions</h2>
+  <ul>
+    <li *ngFor="let s of result.refinedSuggestions">{{ s }}</li>
+  </ul>
+</section>

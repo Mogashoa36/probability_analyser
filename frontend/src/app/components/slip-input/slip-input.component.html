@@ -1,0 +1,34 @@
+<section class="panel">
+  <h1>Analyse a slip</h1>
+  <p class="lede">
+    Paste your Betway or Hollywoodbets slip below - one selection per line - and get a modelled
+    win probability for each leg plus the slip as a whole.
+  </p>
+
+  <textarea
+    class="slip-box"
+    [(ngModel)]="rawText"
+    [placeholder]="placeholder"
+    rows="8"
+    spellcheck="false"
+  ></textarea>
+
+  <div class="format-hint">
+    Accepted formats: <code>Team A vs Team B - Home Win &#64; 1.85</code>,
+    <code>Team A v Team B, OVER_2_5, 1.65</code>,
+    <code>Team A, Team B, OVER_2_5, 1.65</code>, or plain <code>Team A vs Team B</code> for a fixture with no odds.
+    Nicknames work too - "Man City" resolves to Manchester City.
+  </div>
+
+  <div class="actions">
+    <button class="btn btn-primary" (click)="analyze()" [disabled]="loading">
+      {{ loading ? 'Analysing…' : 'Analyse slip' }}
+    </button>
+    <button class="btn btn-ghost" (click)="useSample()" [disabled]="loading">Use sample slip</button>
+    <button class="btn btn-ghost" (click)="clear()" [disabled]="loading">Clear</button>
+  </div>
+
+  <p class="error" *ngIf="error">{{ error }}</p>
+</section>
+
+<app-slip-results *ngIf="result" [result]="result" />

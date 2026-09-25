@@ -1,0 +1,135 @@
+.panel {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 28px;
+}
+
+h1 {
+  margin: 0 0 8px;
+  font-size: 22px;
+}
+
+.lede {
+  color: var(--text-dim);
+  font-size: 14px;
+  margin: 0 0 20px;
+  max-width: 68ch;
+}
+
+.mode-toggle {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+.btn {
+  background: var(--surface-alt);
+  border: 1px solid var(--border);
+  color: var(--text-dim);
+  padding: 8px 14px;
+  border-radius: 6px;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.btn.active {
+  color: var(--text);
+  border-color: var(--accent-blue);
+}
+
+.paste-area {
+  margin-top: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.fixture-box {
+  width: 100%;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text);
+  font-family: var(--font-mono);
+  font-size: 13px;
+  padding: 14px 16px;
+  resize: vertical;
+  box-sizing: border-box;
+}
+
+.error {
+  color: var(--danger);
+  font-size: 13px;
+  margin-top: 14px;
+}
+
+.empty {
+  color: var(--text-dim);
+  font-size: 13px;
+  margin-top: 24px;
+}
+
+.rec-list {
+  margin-top: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.rec-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 18px 20px;
+}
+
+.rec-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.fixture {
+  font-weight: 600;
+  font-size: 15px;
+}
+
+.pill {
+  font-size: 11px;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-family: var(--font-mono);
+}
+
+.conf-strong { background: rgba(62, 213, 152, 0.15); color: var(--accent); }
+.conf-moderate { background: rgba(91, 141, 239, 0.15); color: var(--accent-blue); }
+.conf-speculative { background: rgba(245, 166, 35, 0.15); color: var(--warn); }
+
+.rec-mid {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 8px;
+  color: var(--text-dim);
+  font-size: 13px;
+}
+
+.prob {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.reasoning {
+  margin: 10px 0 6px;
+  font-size: 13px;
+  color: var(--text-dim);
+  line-height: 1.5;
+}
+
+.league {
+  font-size: 11px;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}

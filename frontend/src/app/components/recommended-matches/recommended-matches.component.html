@@ -1,0 +1,46 @@
+<section class="panel">
+  <h1>Recommended matches</h1>
+  <p class="lede">
+    Ranked by how confidently the model can call an outcome - lopsided matches score higher than
+    close ones, even at the same headline probability.
+  </p>
+
+  <div class="mode-toggle">
+    <button class="btn" [class.active]="mode === 'stored'" (click)="setMode('stored')">From saved fixtures</button>
+    <button class="btn" [class.active]="mode === 'paste'" (click)="setMode('paste')">Paste a fixture list</button>
+  </div>
+
+  <div class="paste-area" *ngIf="mode === 'paste'">
+    <textarea
+      class="fixture-box"
+      [(ngModel)]="rawText"
+      placeholder="Kaizer Chiefs vs Orlando Pirates&#10;Man City vs Arsenal&#10;Real Madrid vs Barcelona"
+      rows="5"
+      spellcheck="false"
+    ></textarea>
+    <button class="btn btn-primary" (click)="analyzePasted()" [disabled]="loading">
+      {{ loading ? 'Ranking…' : 'Rank these fixtures' }}
+    </button>
+  </div>
+
+  <p class="error" *ngIf="error">{{ error }}</p>
+</section>
+
+<section class="rec-list" *ngIf="recommendations.length">
+  <div class="rec-card" *ngFor="let rec of recommendations">
+    <div class="rec-top">
+      <span class="fixture">{{ rec.homeTeam }} vs {{ rec.awayTeam }}</span>
+      <span class="pill" [ngClass]="confidenceClass(rec.confidenceScore)">{{ confidenceLabel(rec.confidenceScore) }}</span>
+    </div>
+    <div class="rec-mid">
+      <span class="market">{{ marketLabel(rec.recommendedMarket) }}</span>
+      <span class="prob mono">{{ rec.modelProbabilityPct.toFixed(0) }}%</span>
+    </div>
+    <p class="reasoning">{{ rec.reasoning }}</p>
+    <span class="league" *ngIf="rec.league">{{ rec.league }}</span>
+  </div>
+</section>
+
+<p class="empty" *ngIf="!recommendations.length && !loading && !error">
+  No fixtures to rank yet - add some via the API or paste a list above.
+</p>

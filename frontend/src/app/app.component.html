@@ -1,0 +1,20 @@
+<div class="shell">
+  <header class="topbar">
+    <div class="brand">
+      <span class="brand-mark">FL</span>
+      <span class="brand-name">Formline</span>
+    </div>
+    <nav class="tabs">
+      <a routerLink="/analyze" routerLinkActive="active" class="tab">Analyse Slip</a>
+      <a routerLink="/recommendations" routerLinkActive="active" class="tab">Recommended Matches</a>
+    </nav>
+  </header>
+
+  <main class="content">
+    <router-outlet />
+  </main>
+
+  <footer class="foot">
+    Model output is a statistical estimate, not a guarantee. Bet responsibly.
+  </footer>
+</div>
