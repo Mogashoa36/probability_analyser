@@ -24,7 +24,10 @@ betting slips and recommending upcoming matches, built from team strength data
   kicking off within 48 hours.
 - Filter the ranked list by team/league search, confidence band, market
   type (result vs goals), league, kick-off window (today / next 3 days /
-  next 7 days) and a minimum model probability, with three sort orders.
+  next 7 days) and a minimum model probability.
+- Ordered by kick-off **date and time, latest first** by default, with
+  soonest-first, confidence and model-probability as alternatives. Fixtures
+  with no kick-off time (a pasted list) sort below every dated one.
 
 ## Pasting a slip
 

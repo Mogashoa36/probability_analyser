@@ -7,7 +7,7 @@ import { Recommendation } from '../../models/recommendation.model';
 type ConfidenceFilter = 'ALL' | 'STRONG' | 'MODERATE' | 'SPECULATIVE';
 type MarketGroupFilter = 'ALL' | 'RESULT' | 'GOALS';
 type WindowFilter = 'ALL' | 'TODAY' | 'NEXT_3' | 'NEXT_7';
-type SortKey = 'CONFIDENCE' | 'KICKOFF' | 'PROBABILITY';
+type SortKey = 'DATE_DESC' | 'DATE_ASC' | 'CONFIDENCE' | 'PROBABILITY';
 
 @Component({
   selector: 'app-recommended-matches',
@@ -35,7 +35,8 @@ export class RecommendedMatchesComponent implements OnInit {
   league = 'ALL';
   window: WindowFilter = 'ALL';
   minProbability = 0;
-  sort: SortKey = 'CONFIDENCE';
+  /** Latest kick-off first, so the list reads newest-to-oldest by default. */
+  sort: SortKey = 'DATE_DESC';
 
   constructor(private recommendationService: RecommendationService) {}
 
@@ -122,7 +123,7 @@ export class RecommendedMatchesComponent implements OnInit {
     this.league = 'ALL';
     this.window = 'ALL';
     this.minProbability = 0;
-    this.sort = 'CONFIDENCE';
+    this.sort = 'DATE_DESC';
   }
 
   /** The recommendations actually shown, after filtering and sorting. */
@@ -164,14 +165,19 @@ export class RecommendedMatchesComponent implements OnInit {
       switch (this.sort) {
         case 'PROBABILITY':
           return b.modelProbabilityPct - a.modelProbabilityPct;
-        case 'KICKOFF': {
+        case 'DATE_DESC':
+        case 'DATE_ASC': {
           const ka = this.kickOffTime(a);
           const kb = this.kickOffTime(b);
-          // Fixtures with no kick-off always sink to the bottom.
+          // Fixtures with no kick-off (a pasted list) always sink to the bottom,
+          // then fall back to confidence so the order is still stable.
           if (ka === null && kb === null) return b.confidenceScore - a.confidenceScore;
           if (ka === null) return 1;
           if (kb === null) return -1;
-          return ka - kb;
+          // Same kick-off to the minute: show the stronger pick first.
+          return ka === kb
+            ? b.confidenceScore - a.confidenceScore
+            : this.sort === 'DATE_DESC' ? kb - ka : ka - kb;
         }
         default:
           return b.confidenceScore - a.confidenceScore;

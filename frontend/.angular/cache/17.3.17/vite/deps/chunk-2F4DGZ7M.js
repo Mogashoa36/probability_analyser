@@ -3,7 +3,7 @@ import {
   XhrFactory,
   isPlatformServer,
   parseCookieValue
-} from "./chunk-ZQGI3ZYG.js";
+} from "./chunk-XBDBOH2L.js";
 import {
   APP_BOOTSTRAP_LISTENER,
   ApplicationRef,
@@ -43,9 +43,9 @@ import {
   ɵɵdefineInjector,
   ɵɵdefineNgModule,
   ɵɵinject
-} from "./chunk-6DT2DWOU.js";
+} from "./chunk-V27K3R2J.js";
 
-// node_modules/@angular/common/fesm2022/http.mjs
+// ../../node_modules/@angular/common/fesm2022/http.mjs
 var HttpHandler = class {
 };
 var HttpBackend = class {
@@ -2331,4 +2331,4 @@ export {
    * License: MIT
    *)
 */
-//# sourceMappingURL=chunk-H4XFGP3N.js.map
+//# sourceMappingURL=chunk-2F4DGZ7M.js.map

@@ -88,8 +88,9 @@
     <label class="field">
       <span class="field-label">Sort by</span>
       <select class="control" [(ngModel)]="sort">
+        <option value="DATE_DESC">Kick-off (latest first)</option>
+        <option value="DATE_ASC">Kick-off (soonest first)</option>
         <option value="CONFIDENCE">Confidence (best first)</option>
-        <option value="KICKOFF">Kick-off (soonest first)</option>
         <option value="PROBABILITY">Model probability</option>
       </select>
     </label>
