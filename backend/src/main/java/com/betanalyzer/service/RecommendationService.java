@@ -8,6 +8,7 @@ import com.betanalyzer.repository.MatchRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -34,7 +35,7 @@ public class RecommendationService {
         List<Match> upcoming = matchRepository.findByStatus(Match.MatchStatus.SCHEDULED);
         List<RecommendationDto> recs = new ArrayList<>();
         for (Match m : upcoming) {
-            recs.add(buildRecommendation(m.getId(), m.getHomeTeam(), m.getAwayTeam(), m.getLeague()));
+            recs.add(buildRecommendation(m.getId(), m.getHomeTeam(), m.getAwayTeam(), m.getLeague(), m.getKickOff()));
         }
         return recs.stream()
                 .sorted(Comparator.comparingDouble(RecommendationDto::getConfidenceScore).reversed())
@@ -47,7 +48,7 @@ public class RecommendationService {
         List<RecommendationDto> recs = new ArrayList<>();
         for (var parsed : slipParserService.parseSlipText(rawText)) {
             if (parsed.getWarning() != null) continue;
-            recs.add(buildRecommendation(null, parsed.getHomeTeam(), parsed.getAwayTeam(), null));
+            recs.add(buildRecommendation(null, parsed.getHomeTeam(), parsed.getAwayTeam(), null, null));
         }
         return recs.stream()
                 .sorted(Comparator.comparingDouble(RecommendationDto::getConfidenceScore).reversed())
@@ -55,18 +56,21 @@ public class RecommendationService {
                 .toList();
     }
 
-    private RecommendationDto buildRecommendation(Long matchId, Team homeStored, Team awayStored, String league) {
+    private RecommendationDto buildRecommendation(Long matchId, Team homeStored, Team awayStored, String league,
+                                                  LocalDateTime kickOff) {
         return buildRecommendationInternal(matchId, homeStored, awayStored,
-                league != null ? league : homeStored.getLeague());
+                league != null ? league : homeStored.getLeague(), kickOff);
     }
 
-    private RecommendationDto buildRecommendation(Long matchId, String homeName, String awayName, String league) {
+    private RecommendationDto buildRecommendation(Long matchId, String homeName, String awayName, String league,
+                                                  LocalDateTime kickOff) {
         Team home = teamStrengthService.resolveOrDefault(homeName);
         Team away = teamStrengthService.resolveOrDefault(awayName);
-        return buildRecommendationInternal(matchId, home, away, league != null ? league : home.getLeague());
+        return buildRecommendationInternal(matchId, home, away, league != null ? league : home.getLeague(), kickOff);
     }
 
-    private RecommendationDto buildRecommendationInternal(Long matchId, Team home, Team away, String league) {
+    private RecommendationDto buildRecommendationInternal(Long matchId, Team home, Team away, String league,
+                                                         LocalDateTime kickOff) {
         var outcome = probabilityCalculationService.computeOutcomeProbabilities(home, away);
 
         // Find the most likely of the three result markets.
@@ -102,7 +106,7 @@ public class RecommendationService {
         String reasoning = buildReasoning(home, away, bestMarket, bestProb, gap);
 
         return new RecommendationDto(matchId, home.getName(), away.getName(),
-                league, bestMarket.name(), Math.round(bestProb * 10000.0) / 100.0, confidenceScore, reasoning);
+                league, kickOff, bestMarket.name(), Math.round(bestProb * 10000.0) / 100.0, confidenceScore, reasoning);
     }
 
     private double secondHighest(double a, double b, double c) {

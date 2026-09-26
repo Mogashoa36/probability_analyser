@@ -7,6 +7,7 @@ com\betanalyzer\repository\BettingSlipRepository.class
 com\betanalyzer\dto\TeamDto.class
 com\betanalyzer\repository\TeamAliasRepository.class
 com\betanalyzer\service\RecommendationService$1.class
+com\betanalyzer\service\SlipParserService$1.class
 com\betanalyzer\entity\SlipSelection$Market.class
 com\betanalyzer\controller\RecommendationController.class
 com\betanalyzer\service\ProbabilityCalculationService$1.class

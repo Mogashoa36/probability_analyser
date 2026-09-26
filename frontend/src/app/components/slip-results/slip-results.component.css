@@ -10,7 +10,7 @@
 }
 
 .stat {
-  background: var(--surface);
+  background: linear-gradient(180deg, rgba(16, 16, 21, 0.96) 0%, var(--surface) 100%);
   padding: 16px 18px;
   display: flex;
   flex-direction: column;
@@ -20,12 +20,15 @@
 .stat-label {
   font-size: 11px;
   color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
 }
 
 .stat-value {
   font-family: var(--font-mono);
   font-size: 20px;
   font-weight: 600;
+  color: #FFFFFF;
 }
 
 .pill {
@@ -36,10 +39,11 @@
   font-size: 12px;
 }
 
-.risk-low { background: rgba(62, 213, 152, 0.15); color: var(--accent); }
-.risk-medium { background: rgba(91, 141, 239, 0.15); color: var(--accent-blue); }
-.risk-high { background: rgba(245, 166, 35, 0.15); color: var(--warn); }
-.risk-very-high { background: rgba(255, 92, 92, 0.15); color: var(--danger); }
+/* Risk ramp, crimson -> red as the slip gets riskier. */
+.risk-low { background: rgba(255, 46, 85, 0.18); color: var(--crimson-bright); }
+.risk-medium { background: rgba(255, 255, 255, 0.1); color: #FFFFFF; }
+.risk-high { background: rgba(232, 162, 178, 0.16); color: var(--rose); }
+.risk-very-high { background: rgba(255, 59, 59, 0.18); color: var(--red); }
 
 .legs, .suggestions {
   margin-top: 32px;
@@ -48,9 +52,10 @@
 h2 {
   font-size: 15px;
   font-weight: 600;
-  color: var(--text-dim);
+  color: var(--crimson-bright);
   text-transform: none;
   margin: 0 0 12px;
+  letter-spacing: 0.01em;
 }
 
 .leg-row {
@@ -61,29 +66,36 @@ h2 {
   padding: 12px 4px;
   border-bottom: 1px solid var(--border);
   font-size: 13px;
+  color: var(--text-soft);
+}
+
+.leg-row:not(.leg-head):hover {
+  background: rgba(220, 20, 60, 0.06);
 }
 
 .leg-head {
-  color: var(--text-dim);
+  color: var(--text-faint);
   font-size: 11px;
-  border-bottom: 1px solid var(--border);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border-bottom: 1px solid var(--border-strong);
 }
 
 .leg-head span:nth-child(n+3) { text-align: right; }
 
-.fixture { font-weight: 500; }
+.fixture { font-weight: 500; color: #FFFFFF; }
 
 .mono {
   font-family: var(--font-mono);
   text-align: right;
 }
 
-.edge-positive { color: var(--accent); }
-.edge-negative { color: var(--danger); }
+.edge-positive { color: var(--crimson-bright); }
+.edge-negative { color: var(--red); }
 .edge-neutral { color: var(--text-dim); }
 
 .note {
-  color: var(--text-dim);
+  color: var(--text-faint);
   font-size: 12px;
   grid-column: 1 / -1;
   margin-top: -6px;
@@ -99,6 +111,6 @@ h2 {
 
 .suggestions li {
   font-size: 13px;
-  color: var(--text);
+  color: var(--text-soft);
   line-height: 1.5;
 }

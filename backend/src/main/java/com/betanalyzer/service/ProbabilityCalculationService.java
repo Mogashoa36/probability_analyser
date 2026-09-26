@@ -48,17 +48,33 @@ public class ProbabilityCalculationService {
     }
 
     public double computeMarketProbability(Team home, Team away, Market market) {
+        return computeMarketProbability(home, away, market, null);
+    }
+
+    /**
+     * @param goalLine the Over/Under threshold; null means the 2.5 default. Books
+     *                 print many lines beyond 2.5, and pricing them all as 2.5
+     *                 would be quietly wrong rather than obviously wrong.
+     */
+    public double computeMarketProbability(Team home, Team away, Market market, Double goalLine) {
         MatchOutcomeProbabilities outcome = computeOutcomeProbabilities(home, away);
+        int thresholdGoals = thresholdGoals(goalLine);
         return switch (market) {
             case HOME_WIN -> outcome.homeWin();
             case DRAW -> outcome.draw();
             case AWAY_WIN -> outcome.awayWin();
-            case OVER_2_5 -> probabilityOverGoals(home, away, 2);
-            case UNDER_2_5 -> 1 - probabilityOverGoals(home, away, 2);
+            case OVER_2_5 -> probabilityOverGoals(home, away, thresholdGoals);
+            case UNDER_2_5 -> 1 - probabilityOverGoals(home, away, thresholdGoals);
             case BTTS_YES -> probabilityBttsYes(home, away);
             case BTTS_NO -> 1 - probabilityBttsYes(home, away);
             case UNKNOWN -> 0.5; // no model applies - neutral fallback
         };
+    }
+
+    /** "Over 2.5" is more than 2 goals, "Over 3" is more than 3. */
+    private int thresholdGoals(Double goalLine) {
+        double line = goalLine == null ? 2.5 : goalLine;
+        return (int) Math.floor(line);
     }
 
     /** Expected goals for the home side in this fixture. */

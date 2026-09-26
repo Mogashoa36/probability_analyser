@@ -21,25 +21,141 @@
     <button class="btn btn-primary" (click)="analyzePasted()" [disabled]="loading">
       {{ loading ? 'Ranking…' : 'Rank these fixtures' }}
     </button>
+    <p class="hint">Pasted fixtures have no kick-off time attached, so they show as "time TBC".</p>
   </div>
 
   <p class="error" *ngIf="error">{{ error }}</p>
 </section>
 
-<section class="rec-list" *ngIf="recommendations.length">
-  <div class="rec-card" *ngFor="let rec of recommendations">
+<!-- ---------------------------------------------------------------- filters -->
+<section class="filters" *ngIf="recommendations.length">
+  <div class="filter-head">
+    <h2>Filter</h2>
+    <span class="count">
+      Showing <strong>{{ visible.length }}</strong> of {{ recommendations.length }}
+    </span>
+  </div>
+
+  <div class="filter-grid">
+    <label class="field field-search">
+      <span class="field-label">Search</span>
+      <input
+        type="search"
+        class="control"
+        [(ngModel)]="search"
+        placeholder="Team or league…"
+        spellcheck="false"
+      />
+    </label>
+
+    <label class="field">
+      <span class="field-label">Confidence</span>
+      <select class="control" [(ngModel)]="confidence">
+        <option value="ALL">Any confidence</option>
+        <option value="STRONG">Strong only (70+)</option>
+        <option value="MODERATE">Moderate (50-69)</option>
+        <option value="SPECULATIVE">Speculative (&lt;50)</option>
+      </select>
+    </label>
+
+    <label class="field">
+      <span class="field-label">Market</span>
+      <select class="control" [(ngModel)]="marketGroup">
+        <option value="ALL">All markets</option>
+        <option value="RESULT">Result (1X2)</option>
+        <option value="GOALS">Goals (over/under, BTTS)</option>
+      </select>
+    </label>
+
+    <label class="field">
+      <span class="field-label">League</span>
+      <select class="control" [(ngModel)]="league">
+        <option value="ALL">All leagues</option>
+        <option *ngFor="let l of leagues" [value]="l">{{ l }}</option>
+      </select>
+    </label>
+
+    <label class="field">
+      <span class="field-label">Kick-off</span>
+      <select class="control" [(ngModel)]="window">
+        <option value="ALL">Any time</option>
+        <option value="TODAY">Today</option>
+        <option value="NEXT_3">Next 3 days</option>
+        <option value="NEXT_7">Next 7 days</option>
+      </select>
+    </label>
+
+    <label class="field">
+      <span class="field-label">Sort by</span>
+      <select class="control" [(ngModel)]="sort">
+        <option value="CONFIDENCE">Confidence (best first)</option>
+        <option value="KICKOFF">Kick-off (soonest first)</option>
+        <option value="PROBABILITY">Model probability</option>
+      </select>
+    </label>
+
+    <label class="field">
+      <span class="field-label">Fixtures ranked</span>
+      <select class="control" [(ngModel)]="limit" (ngModelChange)="onLimitChange()">
+        <option *ngFor="let n of limitOptions" [ngValue]="n">{{ n }}</option>
+      </select>
+    </label>
+
+    <label class="field field-range">
+      <span class="field-label">
+        Min probability <strong class="range-value">{{ minProbability }}%</strong>
+      </span>
+      <input
+        type="range"
+        class="range"
+        min="0"
+        max="90"
+        step="5"
+        [(ngModel)]="minProbability"
+      />
+    </label>
+  </div>
+
+  <button class="btn btn-ghost clear-btn" *ngIf="hasActiveFilters" (click)="resetFilters()">
+    Clear filters
+  </button>
+</section>
+
+<!-- ------------------------------------------------------------- match cards -->
+<section class="rec-list" *ngIf="visible.length">
+  <article class="rec-card" *ngFor="let rec of visible" [class.imminent]="isImminent(rec)">
     <div class="rec-top">
       <span class="fixture">{{ rec.homeTeam }} vs {{ rec.awayTeam }}</span>
       <span class="pill" [ngClass]="confidenceClass(rec.confidenceScore)">{{ confidenceLabel(rec.confidenceScore) }}</span>
     </div>
+
+    <div class="kickoff" *ngIf="rec.kickOff; else noKickoff">
+      <span class="kickoff-badge" *ngIf="kickOffBadge(rec)">{{ kickOffBadge(rec) }}</span>
+      <span class="kickoff-date">{{ rec.kickOff | date: 'EEE d MMM y' }}</span>
+      <span class="kickoff-dot">·</span>
+      <span class="kickoff-time mono">{{ rec.kickOff | date: 'HH:mm' }}</span>
+    </div>
+    <ng-template #noKickoff>
+      <div class="kickoff unknown">
+        <span class="kickoff-badge muted">{{ kickOffBadge(rec) }}</span>
+      </div>
+    </ng-template>
+
     <div class="rec-mid">
       <span class="market">{{ marketLabel(rec.recommendedMarket) }}</span>
       <span class="prob mono">{{ rec.modelProbabilityPct.toFixed(0) }}%</span>
     </div>
+
     <p class="reasoning">{{ rec.reasoning }}</p>
     <span class="league" *ngIf="rec.league">{{ rec.league }}</span>
-  </div>
+  </article>
 </section>
+
+<p class="empty" *ngIf="!visible.length && !loading && !error && recommendations.length && hasActiveFilters">
+  No matches match these filters.
+  <button class="link-btn" (click)="resetFilters()">Clear them</button>
+  to see all {{ recommendations.length }} ranked matches.
+</p>
 
 <p class="empty" *ngIf="!recommendations.length && !loading && !error">
   No fixtures to rank yet - add some via the API or paste a list above.

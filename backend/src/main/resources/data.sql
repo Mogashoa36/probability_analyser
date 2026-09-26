@@ -39,6 +39,28 @@ FROM (
 WHERE NOT EXISTS (SELECT 1 FROM match_fixture m
                   WHERE m.home_team_id = h.id AND m.away_team_id = a.id);
 
+-- A few fixtures dated relative to the day the app boots, so the "Kick-off"
+-- filters (today / next 3 days / next 7 days) and the soonest-first sort on the
+-- Recommended Matches page always have something in range. Hard-coded dates
+-- would drift into the past and leave those filters showing an empty list.
+-- Each row offsets from CURRENT_DATE by a day count, then adds a kick-off time.
+INSERT INTO match_fixture (home_team_id, away_team_id, league, kick_off, status)
+SELECT h.id, a.id, s.league,
+       DATEADD('MINUTE', s.minute_of_day,
+               DATEADD('DAY', s.days_from_today, CAST(CURRENT_DATE AS TIMESTAMP))),
+       'SCHEDULED'
+FROM (
+         SELECT 'Arsenal'                  AS home_name, 'Liverpool'           AS away_name, 'EPL' AS league, 0 AS days_from_today, 1020 AS minute_of_day
+         UNION ALL SELECT 'Mamelodi Sundowns', 'Orlando Pirates',  'PSL',     0, 1200
+         UNION ALL SELECT 'Liverpool',         'Manchester City',  'EPL',     1, 1140
+         UNION ALL SELECT 'Barcelona',         'Real Madrid',      'La Liga', 2, 1170
+         UNION ALL SELECT 'Chelsea',           'Arsenal',          'EPL',     5, 1230
+     ) s
+         JOIN team h ON h.name = s.home_name
+         JOIN team a ON a.name = s.away_name
+WHERE NOT EXISTS (SELECT 1 FROM match_fixture m
+                  WHERE m.home_team_id = h.id AND m.away_team_id = a.id);
+
 -- Bookmakers and pasted bet slips use nicknames far more often than official club
 -- names. Without these, "Man City" or "Barca" would fall back to league-average
 -- figures and every affected leg would be flagged LOW confidence.

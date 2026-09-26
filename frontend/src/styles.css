@@ -1,14 +1,41 @@
+/* ===========================================================================
+   Formline theme - HD black with crimson / red / white.
+   Every colour the app uses is declared here; components only reference the
+   variables so the whole palette can be retuned from this one block.
+   =========================================================================== */
 :root {
-  --bg: #0F1419;
-  --surface: #171D26;
-  --surface-alt: #1D2530;
-  --border: #232B36;
-  --text: #E8ECF1;
-  --text-dim: #8B96A5;
-  --accent: #3ED598;
-  --accent-blue: #5B8DEF;
-  --warn: #F5A623;
-  --danger: #FF5C5C;
+  /* Backgrounds: true black base, with barely-lifted surfaces for panels. */
+  --bg: #000000;
+  --bg-glow: #14000A;
+  --surface: #0A0A0D;
+  --surface-alt: #121218;
+  --surface-raised: #17171F;
+
+  /* Borders carry a hint of crimson so panels read as part of one theme. */
+  --border: #241019;
+  --border-strong: #43121F;
+
+  /* Text: white headlines, soft white body, muted rose for secondary info. */
+  --text: #FFFFFF;
+  --text-soft: #E9E4E6;
+  --text-dim: #A98A93;
+  --text-faint: #6B565D;
+
+  /* The brand ramp: crimson -> red, with pure white reserved for emphasis. */
+  --crimson: #DC143C;
+  --crimson-bright: #FF2E55;
+  --crimson-deep: #8A0F2A;
+  --red: #FF3B3B;
+  --rose: #E8A2B2;
+  --crimson-wash: rgba(220, 20, 60, 0.14);
+  --crimson-glow: rgba(220, 20, 60, 0.45);
+
+  /* Semantic slots used by the existing component styles. */
+  --accent: var(--crimson);
+  --accent-blue: var(--crimson-bright);
+  --warn: var(--rose);
+  --danger: var(--red);
+
   --font-body: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, sans-serif;
   --font-mono: 'IBM Plex Mono', 'SF Mono', Consolas, monospace;
 }
@@ -18,13 +45,41 @@
 html, body {
   margin: 0;
   padding: 0;
+  min-height: 100%;
   background: var(--bg);
   color: var(--text);
   font-family: var(--font-body);
 }
 
-button {
+body {
+  /* A single soft crimson bloom behind the black, kept subtle so text stays crisp. */
+  background-image:
+    radial-gradient(1100px 520px at 50% -220px, var(--bg-glow) 0%, rgba(20, 0, 10, 0) 70%),
+    radial-gradient(700px 400px at 100% 100%, rgba(138, 15, 42, 0.16) 0%, rgba(0, 0, 0, 0) 65%);
+  background-attachment: fixed;
+}
+
+::selection {
+  background: var(--crimson);
+  color: #FFFFFF;
+}
+
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb {
+  background: var(--crimson-deep);
+  border-radius: 6px;
+  border: 2px solid var(--bg);
+}
+::-webkit-scrollbar-thumb:hover { background: var(--crimson); }
+
+button, input, select, textarea {
   font-family: var(--font-body);
+}
+
+:focus-visible {
+  outline: 2px solid var(--crimson-bright);
+  outline-offset: 2px;
 }
 
 .btn {
@@ -33,10 +88,15 @@ button {
   font-size: 13px;
   font-weight: 500;
   cursor: pointer;
-  border: 1px solid var(--border);
+  border: 1px solid var(--border-strong);
   background: var(--surface-alt);
+  color: var(--text-soft);
+  transition: opacity 0.15s ease, background 0.15s ease, border-color 0.15s ease;
+}
+
+.btn:hover:not(:disabled) {
+  border-color: var(--crimson);
   color: var(--text);
-  transition: opacity 0.15s ease;
 }
 
 .btn:disabled {
@@ -45,15 +105,23 @@ button {
 }
 
 .btn-primary {
-  background: var(--accent);
-  color: #0B0F14;
-  border-color: var(--accent);
+  background: var(--crimson);
+  color: #FFFFFF;
+  border-color: var(--crimson);
+  font-weight: 600;
+}
+
+.btn-primary:hover:not(:disabled) {
+  background: var(--crimson-bright);
+  border-color: var(--crimson-bright);
 }
 
 .btn-ghost {
   background: transparent;
 }
 
-.btn-ghost:hover {
-  background: var(--surface-alt);
+.btn-ghost:hover:not(:disabled) {
+  background: var(--crimson-wash);
+  border-color: var(--crimson);
 }
+

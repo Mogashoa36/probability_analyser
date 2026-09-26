@@ -1,0 +1,35 @@
+{
+  "java.jdt.ls.java.home": "C:\\Program Files\\Eclipse Adoptium\\jdk-17.0.20.101-hotspot",
+
+  "java.configuration.runtimes": [
+    {
+      "name": "JavaSE-17",
+      "path": "C:\\Program Files\\Eclipse Adoptium\\jdk-17.0.20.101-hotspot",
+      "default": true
+    }
+  ],
+
+  "java.import.maven.enabled": true,
+  "java.import.maven.offline.enabled": false,
+
+  "java.import.exclusions": [
+    "**/node_modules/**",
+    "**/.angular/**",
+    "**/target/**",
+    "**/dist/**",
+    "**/build/**"
+  ],
+
+  "java.errors.incompleteClasspath.severity": "ignore",
+
+  "terminal.integrated.env.windows": {
+    "JAVA_HOME": "C:\\Program Files\\Eclipse Adoptium\\jdk-17.0.20.101-hotspot"
+  },
+
+  "files.exclude": {
+    "**/node_modules": true,
+    "**/.angular": true,
+    "**/target": true
+  },
+  "java.jdt.ls.vmargs": "-XX:+UseParallelGC -XX:GCTimeRatio=4 -XX:AdaptiveSizePolicyWeight=90 -Dsun.zip.disableMemoryMapping=true -Xmx8G -Xms100m -Xlog:disable"
+}
