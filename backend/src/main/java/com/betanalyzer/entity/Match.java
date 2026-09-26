@@ -33,6 +33,16 @@ public class Match {
 
     private String league;
 
+    /**
+     * Identifier for this fixture at the upstream data provider, namespaced as
+     * "sofascore:98765". Null for manually created fixtures. Lets a re-sync
+     * update the same row, and - importantly - lets the importer recognise a
+     * result it has already applied to the strength model, so Elo is never
+     * updated twice for one match.
+     */
+    @Column(name = "external_id", unique = true)
+    private String externalId;
+
     private LocalDateTime kickOff;
 
     @Enumerated(EnumType.STRING)

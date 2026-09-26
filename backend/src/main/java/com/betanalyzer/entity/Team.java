@@ -24,6 +24,19 @@ public class Team {
     @Column(nullable = false, unique = true)
     private String name;
 
+    /**
+     * Identifier for this team at the upstream data provider, namespaced as
+     * "sofascore:1234". Null for teams entered by hand. This is the key an
+     * import matches on, so re-syncing a league updates the existing team
+     * instead of creating a duplicate under a slightly different name.
+     */
+    @Column(name = "external_id", unique = true)
+    private String externalId;
+
+    /** Club badge URL from the provider, when it supplies one. */
+    @Column(name = "logo_url")
+    private String logoUrl;
+
     private String league;
 
     /** Elo-style strength rating. League average starts at 1500. */

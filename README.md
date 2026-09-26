@@ -68,7 +68,71 @@ This is a genuine statistical model, not a black box — every
 probability the API returns can be traced back to Elo rating, home
 advantage, form, and expected goals.
 
+## Real data from an external provider
+
+The sample data in `data.sql` only exists so the app runs immediately. To
+rank **real** upcoming matches and learn Elo from **real** scorelines, sync
+from SofaScore via the **Data Sync** page in the app, or:
+
+| Method | Endpoint                          | What it does                                        |
+|--------|-----------------------------------|-----------------------------------------------------|
+| GET    | `/api/sync/status`                | Provider, endpoint, last run, current counts         |
+| POST   | `/api/sync/day`                   | Today's fixtures, every competition                   |
+| POST   | `/api/sync/days?days=7`           | Upcoming fixtures for the next N days                |
+| POST   | `/api/sync/season?tournamentId=17&seasonId=123&results=true` | One season, optionally with results |
+| POST   | `/api/sync/competitions?results=true` | Every competition in `app.sync.competitions`     |
+
+```bash
+curl -X POST "http://localhost:8081/api/sync/competitions?results=true"
+```
+
+Nothing is fetched on boot — a sync is always an explicit action, because it
+writes to the database and moves team ratings.
+
+### Which access route?
+
+Leave `app.sync.sofascore.base-url` blank and the app picks for you:
+
+- **With an API key** → `https://api.sofascore.com/api/v1`. This is the
+  supported route. Get a key and set:
+  ```properties
+  app.sync.sofascore.api-key=your-key-here
+  ```
+- **Without a key** → `https://www.sofascore.com/api/v1`. Keyless and
+  undocumented, and it sits behind bot protection: it returns **HTTP 403** to
+  anything that is not a browser, which includes most servers and CI runners.
+  It can work from a home connection, but don't build on it.
+
+A 403 is reported in the UI as a plain sentence rather than a stack trace, so
+"blocked" is never mistaken for a bug.
+
+### Correctness details worth knowing
+
+- **Idempotent.** Teams and fixtures are matched on their provider id first,
+  then on name and kick-off day, so repeated syncs update rows instead of
+  duplicating them. A club you already have by hand is *adopted* and linked
+  (keeping its Elo) rather than recreated at 1500.
+- **Results are applied once.** Elo, form and goal averages are only updated
+  for a match that was not already `PLAYED`. Without that guard, syncing the
+  same results twice would corrupt every rating.
+- **Regulation scores.** For knockout ties settled in extra time or on
+  penalties, the 90-minute score is stored, not the shootout total — a
+  shootout score would badly skew the Poisson goal averages.
+- **Cancelled fixtures** are stored as `POSTPONED`, so they never appear in
+  the upcoming list nor count as a result.
+- **Competitions** are configured as `id:Name` in
+  `app.sync.competitions`; the season is resolved automatically.
+
+### Adding another provider
+
+Implement `service/external/ExternalDataProvider.java` and register it as a
+bean. `SyncService` is written against that interface only, so a second
+source (an official feed, a paid API, a local file) needs no changes to the
+import logic. Throw `ExternalDataException` for anything the user should see
+as a readable message.
+
 ## Project layout
+
 
 ```
 run-backend.cmd    Start the backend (builds only if the jar is stale)
@@ -80,19 +144,24 @@ backend/    Spring Boot (Java 17)
   entity/       Team, TeamAlias, Match, BettingSlip, SlipSelection
   repository/   Spring Data JPA repositories
   service/      ProbabilityCalculationService, SlipParserService,
-                SlipAnalysisService, RecommendationService, TeamStrengthService
-  controller/   SlipController, RecommendationController, TeamController, MatchController
+                SlipAnalysisService, RecommendationService, TeamStrengthService,
+                SyncService (imports external fixtures/results)
+    external/   ExternalDataProvider interface, SofaScoreClient
+  controller/   SlipController, RecommendationController, TeamController,
+                MatchController, SyncController
   dto/          Request/response payloads
-  config/       CORS
+  config/       CORS, SyncProperties, ExternalDataConfig
 
 frontend/   Angular (standalone components, Angular 17)
   src/app/
-    models/      team, match, slip, recommendation TypeScript interfaces
-    services/    slip.service.ts, recommendation.service.ts, match.service.ts
+    models/      team, match, slip, recommendation, sync TypeScript interfaces
+    services/    slip.service.ts, recommendation.service.ts, match.service.ts,
+                 sync.service.ts
     components/
       slip-input/            "Analyse Slip" page
       slip-results/          Leg-by-leg breakdown + suggestions (used by slip-input)
       recommended-matches/   "Recommended Matches" page (date/time + filters)
+      data-sync/             "Data Sync" page (pull real data from SofaScore)
   src/styles.css   Theme tokens: black background, crimson/red/white palette
 ```
 

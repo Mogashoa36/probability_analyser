@@ -1,0 +1,127 @@
+<section class="panel">
+  <h1>Data sync</h1>
+  <p class="lede">
+    Pull real fixtures and results from SofaScore into the database, so the model ranks actual
+    upcoming matches and learns its Elo ratings from real scorelines instead of only the sample data.
+  </p>
+
+  <div class="status-grid" *ngIf="status as s">
+    <div class="stat">
+      <span class="stat-label">Provider</span>
+      <span class="stat-value">{{ s.provider }}</span>
+    </div>
+    <div class="stat">
+      <span class="stat-label">Teams from provider</span>
+      <span class="stat-value">{{ s.teamsFromProvider }}</span>
+    </div>
+    <div class="stat">
+      <span class="stat-label">Upcoming fixtures</span>
+      <span class="stat-value">{{ s.scheduledFixtures }}</span>
+    </div>
+    <div class="stat">
+      <span class="stat-label">Results recorded</span>
+      <span class="stat-value">{{ s.playedFixtures }}</span>
+    </div>
+  </div>
+
+  <div class="endpoint" *ngIf="status as s">
+    <span class="field-label">Endpoint</span>
+    <code>{{ s.endpoint }}</code>
+  </div>
+
+  <div class="badges" *ngIf="status as s">
+    <span class="badge" [class.on]="s.enabled" [class.off]="!s.enabled">
+      {{ s.enabled ? 'SYNC ENABLED' : 'SYNC DISABLED' }}
+    </span>
+    <span class="badge" *ngIf="s.lastRanAt" [class.ok]="s.lastRunSucceeded" [class.bad]="!s.lastRunSucceeded">
+      LAST RUN {{ s.lastRanAt | date: 'd MMM y, HH:mm' }}
+    </span>
+  </div>
+
+  <p class="last-message" *ngIf="status?.lastMessage" [class.bad]="!status?.lastRunSucceeded">
+    {{ status?.lastMessage }}
+  </p>
+
+  <p class="error" *ngIf="error">{{ error }}</p>
+</section>
+
+<!-- -------------------------------------------------------------- actions -->
+<section class="panel">
+  <h2>Run a sync</h2>
+  <p class="hint">
+    Syncing is safe to repeat: teams and fixtures are matched on their provider id, and a result is
+    only ever applied to the strength model once.
+  </p>
+
+  <div class="actions">
+    <button class="btn btn-primary" (click)="syncToday()" [disabled]="syncing || !status?.enabled">
+      {{ syncing ? 'Syncing…' : 'Today’s fixtures' }}
+    </button>
+
+    <div class="inline-field">
+      <label class="field-label" for="days">Next</label>
+      <input id="days" class="control small" type="number" min="1" max="30" [(ngModel)]="days" />
+      <span class="field-label">days</span>
+    </div>
+    <button class="btn" (click)="syncNextDays()" [disabled]="syncing || !status?.enabled">
+      Upcoming fixtures
+    </button>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="actions">
+    <label class="checkbox">
+      <input type="checkbox" [(ngModel)]="includeResults" />
+      <span>Also import played results (trains the model)</span>
+    </label>
+    <button class="btn btn-primary" (click)="syncLeagues()" [disabled]="syncing || !status?.enabled">
+      Sync all configured leagues
+    </button>
+  </div>
+
+  <div class="competitions" *ngIf="status?.competitions?.length">
+    <span class="field-label">Configured competitions</span>
+    <div class="chips">
+      <span class="chip" *ngFor="let c of status?.competitions">
+        {{ competitionLabel(c) }}
+        <em class="mono">{{ c.split(':')[0] }}</em>
+      </span>
+    </div>
+    <p class="hint">
+      Edit <code>app.sync.competitions</code> in
+      <code>backend/src/main/resources/application.properties</code> to change these.
+    </p>
+  </div>
+</section>
+
+<!-- --------------------------------------------------------------- reports -->
+<section class="panel" *ngIf="results.length">
+  <h2>Sync history</h2>
+  <p class="empty" *ngIf="!results.length"></p>
+  <div class="report" *ngFor="let r of results" [class.failed]="!r.success">
+    <div class="report-head">
+      <span class="report-source">{{ r.source }}</span>
+      <span class="report-when mono" *ngIf="r.ranAt">{{ r.ranAt | date: 'd MMM, HH:mm:ss' }}</span>
+    </div>
+    <div class="counts" *ngIf="r.success">
+      <span><strong>{{ r.fixturesCreated }}</strong> new fixtures</span>
+      <span><strong>{{ r.fixturesUpdated }}</strong> updated</span>
+      <span><strong>{{ r.teamsCreated }}</strong> new teams</span>
+      <span><strong>{{ r.resultsRecorded }}</strong> results into the model</span>
+      <span *ngIf="r.skipped"><strong>{{ r.skipped }}</strong> skipped</span>
+    </div>
+    <p class="report-message" [class.bad]="!r.success">{{ r.message }}</p>
+  </div>
+</section>
+
+<section class="panel note">
+  <h2>Which access route?</h2>
+  <p class="hint">
+    The supported route is the official API (<code>api.sofascore.com</code>) with an API key set in
+    <code>app.sync.sofascore.api-key</code>. The public web endpoint
+    (<code>www.sofascore.com</code>) needs no key but is undocumented and sits behind bot protection -
+    it answers <strong>HTTP 403</strong> to anything that is not a browser, which includes most
+    servers and CI runners.
+  </p>
+</section>
