@@ -1,18 +1,10 @@
 {
   "version": "0.2.0",
   "configurations": [
+    
     {
       "type": "java",
       "name": "Backend: Spring Boot (:8081)",
-      "request": "launch",
-      "mainClass": "com.betanalyzer.BetAnalyzerApplication",
-      "projectName": "bet-analyzer",
-      "cwd": "${workspaceFolder}/backend",
-      "console": "integratedTerminal"
-    },
-    {
-      "type": "java",
-      "name": "Backend: Spring Boot (:8081, explicit)",
       "request": "launch",
       "mainClass": "com.betanalyzer.BetAnalyzerApplication",
       "projectName": "bet-analyzer",
@@ -23,24 +15,11 @@
       ]
     },
     {
-      "type": "java",
-      "name": "Backend: Spring Boot (:8080, only if 8080 is free)",
-      "request": "launch",
-      "mainClass": "com.betanalyzer.BetAnalyzerApplication",
-      "projectName": "bet-analyzer",
-      "cwd": "${workspaceFolder}/backend",
-      "console": "integratedTerminal",
-      "args": [
-        "--server.port=8080"
-      ]
-    },
-    {
       "type": "node",
-      "name": "Frontend: Angular dev server (:4200)",
+      "name": "Frontend: Angular (:4200)",
       "request": "launch",
       "runtimeExecutable": "npm",
       "runtimeArgs": [
-        "run",
         "start"
       ],
       "cwd": "${workspaceFolder}/frontend",
@@ -54,10 +33,10 @@
   ],
   "compounds": [
     {
-      "name": "Full stack: backend (:8081) + frontend",
+      "name": "Full Stack: Bet Analyzer",
       "configurations": [
         "Backend: Spring Boot (:8081)",
-        "Frontend: Angular dev server (:4200)"
+        "Frontend: Angular (:4200)"
       ],
       "stopAll": true
     }

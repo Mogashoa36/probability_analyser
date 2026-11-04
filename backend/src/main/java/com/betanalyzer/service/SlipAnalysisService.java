@@ -42,6 +42,13 @@ public class SlipAnalysisService {
             }
         }
 
+        // Never fabricate a probability for an empty slip - that would read as a
+        // 100% certain, low-risk bet, which is statistically misleading.
+        if (parsed.isEmpty()) {
+            throw new IllegalArgumentException(
+                    "No selections to analyze. Paste at least one fixture or supply a selections list.");
+        }
+
         List<SelectionResultDto> results = new ArrayList<>();
         double combinedProbability = 1.0;
         double totalOdds = 1.0;

@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 /**
  * Basic CRUD so team-strength data (Elo, form, goal averages) can be
@@ -26,7 +27,14 @@ public class TeamController {
 
     @PostMapping
     public TeamDto create(@RequestBody TeamDto dto) {
-        Team team = new Team(dto.getName(), dto.getLeague(), dto.getEloRating() > 0 ? dto.getEloRating() : 1500);
+        String name = dto.getName() == null ? null : dto.getName().trim();
+        if (name == null || name.isEmpty()) {
+            throw new IllegalArgumentException("Team name is required.");
+        }
+        if (teamRepository.findByNameIgnoreCase(name).isPresent()) {
+            throw new IllegalArgumentException("A team named \"" + name + "\" already exists.");
+        }
+        Team team = new Team(name, dto.getLeague(), dto.getEloRating() > 0 ? dto.getEloRating() : 1500);
         team.setFormPoints(dto.getFormPoints());
         team.setGoalsForAvg(dto.getGoalsForAvg() > 0 ? dto.getGoalsForAvg() : 1.2);
         team.setGoalsAgainstAvg(dto.getGoalsAgainstAvg() > 0 ? dto.getGoalsAgainstAvg() : 1.2);
@@ -35,6 +43,9 @@ public class TeamController {
 
     @DeleteMapping("/{id}")
     public void delete(@PathVariable Long id) {
+        if (!teamRepository.existsById(id)) {
+            throw new NoSuchElementException("Team with id " + id + " not found.");
+        }
         teamRepository.deleteById(id);
     }
 

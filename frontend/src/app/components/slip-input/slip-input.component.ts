@@ -46,7 +46,7 @@ export class SlipInputComponent {
         this.loading = false;
       },
       error: () => {
-        this.error = 'Could not reach the analysis service. Is the backend running on :8080?';
+        this.error = 'Could not reach the analysis service. Is the backend running on :8081?';
         this.loading = false;
       },
     });
