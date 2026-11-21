@@ -4,20 +4,14 @@
   "configurations": [
     {
       "type": "java",
-      "name": "BetAnalyzerApplication",
-      "request": "launch",
-      "mainClass": "com.betanalyzer.BetAnalyzerApplication",
-      "projectName": "bet-analyzer"
-    },
-    {
-      "type": "java",
       "name": "Backend: Spring Boot (:8081)",
       "request": "launch",
       "mainClass": "com.betanalyzer.BetAnalyzerApplication",
-      "projectName": "betting-analyzer",
       "cwd": "${workspaceFolder}/backend",
-      "console": "integratedTerminal",
-      "args": "--server.port=8081"
+      "args": [
+        "--server.port=8081"
+      ],
+      "console": "integratedTerminal"
     },
     {
       "type": "node-terminal",

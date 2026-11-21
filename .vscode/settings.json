@@ -1,3 +1,4 @@
+
 {
   "java.jdt.ls.java.home": "C:\\Program Files\\Eclipse Adoptium\\jdk-17.0.20.101-hotspot",
 
@@ -11,6 +12,7 @@
 
   "java.import.maven.enabled": true,
   "java.import.maven.offline.enabled": false,
+  "java.configuration.updateBuildConfiguration": "automatic",
 
   "java.import.exclusions": [
     "**/node_modules/**",
@@ -20,7 +22,7 @@
     "**/build/**"
   ],
 
-  "java.errors.incompleteClasspath.severity": "ignore",
+  "java.errors.incompleteClasspath.severity": "warning",
 
   "terminal.integrated.env.windows": {
     "JAVA_HOME": "C:\\Program Files\\Eclipse Adoptium\\jdk-17.0.20.101-hotspot"
@@ -31,9 +33,8 @@
     "**/.angular": true,
     "**/target": true
   },
-  "java.jdt.ls.vmargs": "-XX:+UseParallelGC -XX:GCTimeRatio=4 -XX:AdaptiveSizePolicyWeight=90 -Dsun.zip.disableMemoryMapping=true -Xmx16G -Xms100m -Xlog:disable",
-  "java.compile.nullAnalysis.mode": "automatic",
-  "maven.terminal.customEnv": [
-    
-  ]
+
+  "java.jdt.ls.vmargs": "-XX:+UseParallelGC -Dsun.zip.disableMemoryMapping=true -Xmx2G -Xms100m -Xlog:disable",
+
+  "java.compile.nullAnalysis.mode": "automatic"
 }

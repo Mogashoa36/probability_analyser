@@ -3,67 +3,23 @@
   "version": "2.0.0",
   "tasks": [
     {
-      "label": "Backend: Spring Boot",
+      "label": "Backend: Maven Clean Compile",
       "type": "shell",
-      "command": "if (Test-Path '.\\mvnw.cmd') { .\\mvnw.cmd spring-boot:run '-Dspring-boot.run.arguments=--server.port=8081' } elseif (Get-Command mvn -ErrorAction SilentlyContinue) { mvn spring-boot:run '-Dspring-boot.run.arguments=--server.port=8081' } else { Write-Error 'Maven not found. Install Maven or add Maven Wrapper to the backend project.'; exit 1 }",
+      "command": "mvn clean compile",
       "options": {
-        "cwd": "${workspaceFolder}/backend",
-        "shell": {
-          "executable": "powershell.exe",
-          "args": [
-            "-NoProfile",
-            "-ExecutionPolicy",
-            "Bypass",
-            "-Command"
-          ]
-        }
+        "cwd": "${workspaceFolder}/backend"
       },
-      "isBackground": true,
-      "problemMatcher": {
-        "owner": "spring-boot",
-        "pattern": [
-          {
-            "regexp": "^$",
-            "message": 0
-          }
-        ],
-        "background": {
-          "activeOnStart": true,
-          "beginsPattern": ".*",
-          "endsPattern": "Started .* in .* seconds.*"
-        }
-      }
+      "group": "build",
+      "problemMatcher": []
     },
     {
-      "label": "Frontend: Angular",
+      "label": "Frontend: Angular Build",
       "type": "shell",
-      "command": "npm start",
+      "command": "npm run build",
       "options": {
         "cwd": "${workspaceFolder}/frontend"
       },
-      "isBackground": true,
-      "problemMatcher": {
-        "owner": "angular",
-        "pattern": [
-          {
-            "regexp": "^$",
-            "message": 0
-          }
-        ],
-        "background": {
-          "activeOnStart": true,
-          "beginsPattern": ".*",
-          "endsPattern": "Compiled successfully.*|Application bundle generation complete.*"
-        }
-      }
-    },
-    {
-      "label": "Full Stack: Bet Analyzer",
-      "dependsOn": [
-        "Backend: Spring Boot",
-        "Frontend: Angular"
-      ],
-      "dependsOrder": "parallel",
+      "group": "build",
       "problemMatcher": []
     }
   ]
