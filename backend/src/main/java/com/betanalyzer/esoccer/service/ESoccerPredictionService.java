@@ -251,7 +251,7 @@ public class ESoccerPredictionService {
         sb.append(String.format("Model gives %.0f%% chance of %s win, %.0f%% draw, %.0f%% chance of %s win.%n",
                 outcome.probPlayerAWin() * 100, formA.playerName(), outcome.probDraw() * 100, outcome.probPlayerBWin() * 100, formB.playerName()));
         sb.append(String.format("Goals: Over 2.5 at %.0f%%, BTTS at %.0f%%.%n",
-                goals.probOver2_5() * 100, goals.probBttsYes() * 100()));
+                goals.probOver2_5() * 100, goals.probBttsYes() * 100))
         sb.append(String.format("Confidence: %s (%.0f%%). %s%n",
                 confidence.level(), confidence.score(), String.join("; ", confidence.factors())));
         return sb.toString();
@@ -269,3 +269,4 @@ public class ESoccerPredictionService {
 
     private record Confidence(String level, double score, List<String> factors) {}
 }
+
