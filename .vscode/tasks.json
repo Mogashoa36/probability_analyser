@@ -1,0 +1,70 @@
+
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Backend: Spring Boot",
+      "type": "shell",
+      "command": "if (Test-Path '.\\mvnw.cmd') { .\\mvnw.cmd spring-boot:run '-Dspring-boot.run.arguments=--server.port=8081' } elseif (Get-Command mvn -ErrorAction SilentlyContinue) { mvn spring-boot:run '-Dspring-boot.run.arguments=--server.port=8081' } else { Write-Error 'Maven not found. Install Maven or add Maven Wrapper to the backend project.'; exit 1 }",
+      "options": {
+        "cwd": "${workspaceFolder}/backend",
+        "shell": {
+          "executable": "powershell.exe",
+          "args": [
+            "-NoProfile",
+            "-ExecutionPolicy",
+            "Bypass",
+            "-Command"
+          ]
+        }
+      },
+      "isBackground": true,
+      "problemMatcher": {
+        "owner": "spring-boot",
+        "pattern": [
+          {
+            "regexp": "^$",
+            "message": 0
+          }
+        ],
+        "background": {
+          "activeOnStart": true,
+          "beginsPattern": ".*",
+          "endsPattern": "Started .* in .* seconds.*"
+        }
+      }
+    },
+    {
+      "label": "Frontend: Angular",
+      "type": "shell",
+      "command": "npm start",
+      "options": {
+        "cwd": "${workspaceFolder}/frontend"
+      },
+      "isBackground": true,
+      "problemMatcher": {
+        "owner": "angular",
+        "pattern": [
+          {
+            "regexp": "^$",
+            "message": 0
+          }
+        ],
+        "background": {
+          "activeOnStart": true,
+          "beginsPattern": ".*",
+          "endsPattern": "Compiled successfully.*|Application bundle generation complete.*"
+        }
+      }
+    },
+    {
+      "label": "Full Stack: Bet Analyzer",
+      "dependsOn": [
+        "Backend: Spring Boot",
+        "Frontend: Angular"
+      ],
+      "dependsOrder": "parallel",
+      "problemMatcher": []
+    }
+  ]
+}

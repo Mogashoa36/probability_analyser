@@ -1,0 +1,50 @@
+Maven Environment Investigation Report
+========================================
+
+1. JAVA INSTALLATION:
+   - Java version: OpenJDK 17.0.20.1 (Eclipse Adoptium)
+   - javac version: 17.0.20.1
+   - JAVA_HOME: C:\Program Files\Eclipse Adoptium\jdk-17.0.20.101-hotspot
+   - Both `java -version` and `javac -version` recognized in current session
+
+2. MAVEN INSTALLATION:
+   - Maven version: Apache Maven 3.9.9
+   - Maven home: C:\tools\apache-maven-3.9.9
+   - mvn.cmd location: C:\tools\apache-maven-3.9.9\bin\mvn.cmd
+   - Maven was NOT in the current PATH (explaining 'mvn not recognized' error)
+
+3. CONFIGURATION CHANGES MADE:
+   - Set user MAVEN_HOME environment variable: C:\tools\apache-maven-3.9.9
+   - Added C:\tools\apache-maven-3.9.9\bin to user PATH (persistent via setx)
+   - Changes require new PowerShell session to take effect
+
+4. PROJECT VERIFICATION:
+   - Project location: C:\Users\User\Downloads\Systems\formline-betting-analyzer\betting-analyzer\backend
+   - Contains valid pom.xml
+   - Source files: 84 Java files in src/main/java
+   - Resources: application.properties, data.sql
+   - Build result: BUILD SUCCESS
+   - Compilation: 84 source files compiled with JDK 17 release 17
+   - Output: target\classes
+
+5. MAVEN WRAPPER:
+   - Not present in project (no mvnw.cmd or .mvn directory)
+   - Build works using system Maven installation
+
+6. BUILD EXECUTION:
+   - Command: mvn clean compile -f backend/pom.xml
+   - Result: BUILD SUCCESS (38.982 seconds)
+   - Also verified: & "C:\tools\apache-maven-3.9.9\bin\mvn.cmd" clean compile -f "C:\Users\User\Downloads\Systems\formline-betting-analyzer\betting-analyzer\backend\pom.xml"
+
+7. RESIDUAL ISSUES:
+   - Current PowerShell session does not recognize 'mvn' command
+   - Fix: Open a new PowerShell session, or run: & "C:\tools\apache-maven-3.9.9\bin\mvn.cmd" <goals>
+   - Alternatively, run: Set-Location "C:\tools\apache-maven-3.9.9\bin" followed by mvn.cmd
+
+CONCLUSION:
+Maven was already installed at C:\tools\apache-maven-3.9.9. The issue was that Maven's bin directory was not in the system PATH. Configuration changes have been made:
+- MAVEN_HOME set to C:\tools\apache-maven-3.9.9 (user level)
+- Maven bin directory added to user PATH
+- Project compiles successfully with `mvn clean compile`
+
+Java and Maven are both properly configured. The project builds successfully.

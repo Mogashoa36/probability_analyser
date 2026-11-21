@@ -1,34 +1,35 @@
+
 {
   "version": "0.2.0",
   "configurations": [
-    
+    {
+      "type": "java",
+      "name": "BetAnalyzerApplication",
+      "request": "launch",
+      "mainClass": "com.betanalyzer.BetAnalyzerApplication",
+      "projectName": "bet-analyzer"
+    },
     {
       "type": "java",
       "name": "Backend: Spring Boot (:8081)",
       "request": "launch",
       "mainClass": "com.betanalyzer.BetAnalyzerApplication",
-      "projectName": "bet-analyzer",
+      "projectName": "betting-analyzer",
       "cwd": "${workspaceFolder}/backend",
       "console": "integratedTerminal",
-      "args": [
-        "--server.port=8081"
-      ]
+      "args": "--server.port=8081"
     },
     {
-      "type": "node",
+      "type": "node-terminal",
       "name": "Frontend: Angular (:4200)",
       "request": "launch",
-      "runtimeExecutable": "npm",
-      "runtimeArgs": [
-        "start"
-      ],
+      "command": "npm start",
       "cwd": "${workspaceFolder}/frontend",
-      "port": 4200,
-      "console": "integratedTerminal",
-      "autoAttachChildProcesses": true,
-      "skipFiles": [
-        "<node_internals>/**"
-      ]
+      "serverReadyAction": {
+        "pattern": "Local:\\s+(https?://localhost:4200/?)",
+        "uriFormat": "%s",
+        "action": "openExternally"
+      }
     }
   ],
   "compounds": [
