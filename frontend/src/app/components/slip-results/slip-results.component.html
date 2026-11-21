@@ -46,3 +46,18 @@
     <li *ngFor="let s of result.refinedSuggestions">{{ s }}</li>
   </ul>
 </section>
+
+<section class="weakest" *ngIf="result.weakestLegs?.length">
+  <h2>Weakest legs</h2>
+  <div class="leg-row leg-head">
+    <span>Fixture</span>
+    <span>Market</span>
+    <span>Model</span>
+  </div>
+  <div class="leg-row" *ngFor="let leg of result.weakestLegs">
+    <span class="fixture">{{ leg.homeTeam }} vs {{ leg.awayTeam }}</span>
+    <span>{{ marketLabel(leg.market) }}</span>
+    <span class="mono">{{ leg.modelProbabilityPct.toFixed(0) }}%</span>
+  </div>
+  <p class="hint">Removing the weakest leg typically lifts the slip's combined win chance.</p>
+</section>

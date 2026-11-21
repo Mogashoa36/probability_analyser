@@ -1,0 +1,5 @@
+com/betanalyzer/service/SlipParserServiceTest.class
+com/betanalyzer/service/ProbabilityCalculationServiceTest.class
+com/betanalyzer/service/TeamStrengthServiceTest.class
+com/betanalyzer/service/SlipAnalysisServiceTest.class
+com/betanalyzer/controller/SlipControllerTest.class

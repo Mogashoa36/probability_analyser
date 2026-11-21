@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 /**
  * Manage fixtures: add upcoming matches (feeds the Recommendations page)
@@ -28,7 +29,12 @@ public class MatchController {
 
     @PostMapping("/{id}/result")
     public MatchDto recordResult(@PathVariable Long id, @RequestParam int homeGoals, @RequestParam int awayGoals) {
-        Match match = matchRepository.findById(id).orElseThrow();
+        if (homeGoals < 0 || awayGoals < 0) {
+            throw new IllegalArgumentException("Goals cannot be negative (home=" + homeGoals
+                    + ", away=" + awayGoals + ").");
+        }
+        Match match = matchRepository.findById(id).orElseThrow(() -> new NoSuchElementException(
+                "Match with id " + id + " not found."));
         match.setHomeGoals(homeGoals);
         match.setAwayGoals(awayGoals);
         match.setStatus(Match.MatchStatus.PLAYED);
