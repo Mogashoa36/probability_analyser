@@ -1,0 +1,2 @@
+package com.betanalyzer.esoccer.repository;
+import java.util.List;  import com.betanalyzer.esoccer.entity.ESoccerPlayerRating; import org.springframework.data.jpa.repository.JpaRepository; import java.util.Optional;  public interface ESoccerPlayerRatingRepository extends JpaRepository<ESoccerPlayerRating, Long> {     Optional<ESoccerPlayerRating> findByPlayerId(Long playerId);     Optional<ESoccerPlayerRating> findByPlayerIdAndCompetitionId(Long playerId, Long competitionId);     List<ESoccerPlayerRating> findByCompetitionId(Long competitionId); }

@@ -1,0 +1,33 @@
+<section class="panel">
+  <h1>eSoccer Analysis</h1>
+  <p class="lede">Analyze upcoming eSoccer fixtures using historical player performance, head-to-head records, and goal trends.</p>
+  
+  <div class="panel">
+    <h2>Match Overview</h2>
+    <div class="stat-grid">
+      <div class="stat">
+        <span class="stat-label">Player A</span>
+        <span class="stat-value" #playerA>--</span>
+      </div>
+      <div class="stat">
+        <span class="stat-label">Player B</span>
+        <span class="stat-value" #playerB>--</span>
+      </div>
+      <div class="stat">
+        <span class="stat-label">Competition</span>
+        <span class="stat-value" #competition>--</span>
+      </div>
+      <div class="stat">
+        <span class="stat-label">Game Mode</span>
+        <span class="stat-value" #gameMode>--</span>
+      </div>
+    </div>
+  </div>
+  
+  <div class="panel" *ngIf="prediction">
+    <h2>Prediction</h2>
+    <p>Model probability: Prediction probability Player A win, draw, Player B win</p>
+    <p>Confidence: {{ prediction.confidence.level }} ({{ prediction.confidence.score }})</p>
+    <p>Explanation: {{ prediction.explanation }}</p>
+  </div>
+</section>
